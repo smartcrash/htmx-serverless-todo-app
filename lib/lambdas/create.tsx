@@ -17,6 +17,7 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
     id: Math.random().toString(36).slice(2, 9),
     title,
     description,
+    completed: false,
     createdAt: new Date().toISOString(),
     date: date ? new Date(date).toISOString().slice(0, 10) : null,
   }
