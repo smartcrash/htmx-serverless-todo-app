@@ -7,7 +7,13 @@ import { Todo } from './types'
 const client = new DynamoDBClient({});
 
 export async function handler() {
-  const command = new ScanCommand({ TableName: 'todos' })
+  const command = new ScanCommand({
+    TableName: 'todos',
+    FilterExpression: 'completed = :completed',
+    ExpressionAttributeValues: {
+      ':completed': { BOOL: false },
+    }
+  })
   let items: Record<string, AttributeValue>[] = []
 
   try {
