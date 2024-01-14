@@ -21,6 +21,8 @@ export async function handler() {
     id: item.id.S!,
     title: item.title.S || '',
     description: item.description.S || '',
+    date: item.date.S || null,
+    createdAt: item.createdAt.S!,
   }))
 
   return {
