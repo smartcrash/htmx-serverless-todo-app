@@ -1,7 +1,7 @@
 import * as elements from 'typed-html'
-import { mapValues } from 'lodash-es'
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
-import { AttributeValue, DynamoDBClient, PutItemCommand } from '@aws-sdk/client-dynamodb'
+import { DynamoDBClient, PutItemCommand, } from '@aws-sdk/client-dynamodb'
+import { marshall } from '@aws-sdk/util-dynamodb'
 import { Todo } from './types'
 import { TodoItem } from "./elements";
 
@@ -21,10 +21,7 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
     date: date ? new Date(date).toISOString().slice(0, 10) : null,
   }
 
-  const mappedItem = mapValues(todo, value => (value == null ? { NULL: true, } : { S: value }))
-  const item: Record<string, AttributeValue> = mappedItem
-
-  const command = new PutItemCommand({ TableName: 'todos', Item: item })
+  const command = new PutItemCommand({ TableName: 'todos', Item: marshall(todo) })
 
   try {
     await client.send(command);

@@ -1,5 +1,6 @@
 import * as elements from 'typed-html'
 import { AttributeValue, DynamoDBClient, ScanCommand } from '@aws-sdk/client-dynamodb'
+import { unmarshall } from '@aws-sdk/util-dynamodb'
 import { TodoList } from './elements'
 import { Todo } from './types'
 
@@ -17,13 +18,7 @@ export async function handler() {
     // TODO: handle error
   }
 
-  const todos: Todo[] = items.map(item => ({
-    id: item.id.S!,
-    title: item.title.S || '',
-    description: item.description.S || '',
-    date: item.date.S || null,
-    createdAt: item.createdAt.S!,
-  }))
+  const todos: Todo[] = items.map((item) => unmarshall(item) as Todo)
 
   return {
     statusCode: 200,
