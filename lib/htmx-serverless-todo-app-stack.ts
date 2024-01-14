@@ -1,16 +1,25 @@
+import { join } from 'node:path';
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-// import * as sqs from 'aws-cdk-lib/aws-sqs';
+import { Runtime } from 'aws-cdk-lib/aws-lambda';
+import { NodejsFunction, NodejsFunctionProps } from 'aws-cdk-lib/aws-lambda-nodejs';
+import { LambdaIntegration, RestApi } from 'aws-cdk-lib/aws-apigateway';
 
 export class HtmxServerlessTodoAppStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    // The code that defines your stack goes here
+    const defaultNodejsFunctionProps: NodejsFunctionProps = {
+      runtime: Runtime.NODEJS_20_X,
+    }
 
-    // example resource
-    // const queue = new sqs.Queue(this, 'HtmxServerlessTodoAppQueue', {
-    //   visibilityTimeout: cdk.Duration.seconds(300)
-    // });
+    const indexHandlerFunction = new NodejsFunction(this, 'IndexHandler', {
+      ...defaultNodejsFunctionProps,
+      entry: join(__dirname, 'lambdas', 'index.ts'),
+    })
+
+    const api = new RestApi(this, 'Api', {})
+
+    api.root.addMethod('GET', new LambdaIntegration(indexHandlerFunction))
   }
 }
