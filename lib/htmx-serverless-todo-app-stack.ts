@@ -24,6 +24,11 @@ export class HtmxServerlessTodoAppStack extends cdk.Stack {
       entry: join(__dirname, 'lambdas', 'list.tsx'),
     })
 
+    const createTodoHandlerFunction = new NodejsFunction(this, 'CreateTodoHandle', {
+      ...defaultNodejsFunctionProps,
+      entry: join(__dirname, 'lambdas', 'create.tsx'),
+    })
+
     const table = new Table(this, 'Todos', {
       partitionKey: {
         name: 'id',
@@ -40,6 +45,7 @@ export class HtmxServerlessTodoAppStack extends cdk.Stack {
     })
 
     table.grantReadData(listTodosHandlerFunction)
+    table.grantWriteData(createTodoHandlerFunction)
 
     const api = new RestApi(this, 'Api', {})
 
@@ -48,5 +54,6 @@ export class HtmxServerlessTodoAppStack extends cdk.Stack {
     const todos = api.root.addResource('todos')
 
     todos.addMethod('GET', new LambdaIntegration(listTodosHandlerFunction))
+    todos.addMethod('POST', new LambdaIntegration(createTodoHandlerFunction))
   }
 }

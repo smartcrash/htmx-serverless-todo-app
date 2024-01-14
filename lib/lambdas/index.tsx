@@ -1,5 +1,5 @@
 import * as elements from 'typed-html'
-import { BaseHTML } from './elements'
+import { BaseHTML, TodoForm } from './elements'
 
 export async function handler() {
   return {
@@ -11,6 +11,7 @@ export async function handler() {
         hx-trigger="load"
         hx-swap="outerHTML"
       ></div>
+      <TodoForm />
     </BaseHTML>,
   }
 }
