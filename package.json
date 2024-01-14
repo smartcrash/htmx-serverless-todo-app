@@ -13,10 +13,11 @@
   "devDependencies": {
     "@types/jest": "^29.5.11",
     "@types/node": "20.10.4",
+    "aws-cdk": "2.117.0",
     "jest": "^29.7.0",
     "ts-jest": "^29.1.1",
-    "aws-cdk": "2.117.0",
     "ts-node": "^10.9.2",
+    "typed-html": "^3.0.1",
     "typescript": "~5.3.3"
   },
   "dependencies": {

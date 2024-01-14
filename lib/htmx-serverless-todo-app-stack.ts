@@ -16,7 +16,7 @@ export class HtmxServerlessTodoAppStack extends cdk.Stack {
 
     const indexHandlerFunction = new NodejsFunction(this, 'IndexHandler', {
       ...defaultNodejsFunctionProps,
-      entry: join(__dirname, 'lambdas', 'index.ts'),
+      entry: join(__dirname, 'lambdas', 'index.tsx'),
     })
 
     const table = new Table(this, 'Todos', {
