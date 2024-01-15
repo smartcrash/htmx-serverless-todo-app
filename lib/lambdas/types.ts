@@ -3,6 +3,6 @@ export type Todo = {
   title: string
   description: string
   completed: boolean
-  date: string | null
+  dueDate: string | null
   createdAt: string
 }

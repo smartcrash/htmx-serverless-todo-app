@@ -11,7 +11,7 @@ export function TodoForm() {
     >
       <input name="title" placeholder="Title" required="true" />
       <textarea name="description" placeholder="Description"></textarea>
-      <input type="date" name="date" />
+      <input type="date" name="dueDate" />
       <button type="submit">Submit</button>
     </form>
   )

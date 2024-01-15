@@ -1,7 +1,7 @@
 import * as elements from "typed-html";
 import { Todo } from "../types";
 
-export function TodoItem({ id, title, description, date, completed }: Todo) {
+export function TodoItem({ id, title, description, dueDate, completed }: Todo) {
   return (
     <li>
       <input
@@ -13,7 +13,7 @@ export function TodoItem({ id, title, description, date, completed }: Todo) {
       />
       <h2>{title}</h2>
       <p>{description}</p>
-      {date ? <p>{date}</p> : null}
+      {dueDate ? <p>{dueDate}</p> : null}
     </li>
   )
 }

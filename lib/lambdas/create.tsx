@@ -11,7 +11,7 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
   const body = new URLSearchParams(event.body || '')
   const title = body.get('title') || ''
   const description = body.get('description') || ''
-  const date = body.get('date') || null
+  const dueDate = body.get('dueDate') || null
 
   const todo: Todo = {
     id: Math.random().toString(36).slice(2, 9),
@@ -19,7 +19,7 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
     description,
     completed: false,
     createdAt: new Date().toISOString(),
-    date: date ? new Date(date).toISOString().slice(0, 10) : null,
+    dueDate: dueDate ? new Date(dueDate).toISOString().slice(0, 10) : null,
   }
 
   const command = new PutItemCommand({ TableName: 'todos', Item: marshall(todo) })
