@@ -1,5 +1,5 @@
 import * as elements from 'typed-html'
-import { BaseHTML, TodoForm } from './elements'
+import { BaseHTML, TodoForm } from '../elements'
 
 export async function handler() {
   return {

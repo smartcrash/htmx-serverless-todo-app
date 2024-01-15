@@ -2,8 +2,8 @@ import * as elements from 'typed-html'
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import { DynamoDBClient, PutItemCommand, } from '@aws-sdk/client-dynamodb'
 import { marshall } from '@aws-sdk/util-dynamodb'
-import { Todo } from './types'
-import { TodoItem } from "./elements";
+import { Todo } from '../types'
+import { TodoItem } from "../elements";
 
 const client = new DynamoDBClient({});
 
