@@ -1,8 +1,8 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
-import { DynamoDBClient, PutItemCommand } from '@aws-sdk/client-dynamodb'
+import { PutItemCommand } from '@aws-sdk/client-dynamodb'
+import { ddb } from '../ddb'
 import { marshall} from '@aws-sdk/util-dynamodb'
 
-const client = new DynamoDBClient({});
 
 export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
   const id = event.pathParameters?.id;
@@ -22,7 +22,7 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
   });
 
   try {
-    await client.send(command);
+    await ddb.send(command);
   } catch (error) {
     console.error(error);
     // TODO: handle error

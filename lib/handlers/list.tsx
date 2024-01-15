@@ -1,11 +1,10 @@
 import * as elements from 'typed-html'
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
-import { AttributeValue, DynamoDBClient, ScanCommand, ScanInput } from '@aws-sdk/client-dynamodb'
+import { AttributeValue, ScanCommand, ScanInput } from '@aws-sdk/client-dynamodb'
 import { unmarshall } from '@aws-sdk/util-dynamodb'
 import { TodoList } from '../elements'
 import { Todo } from '../types'
-
-const client = new DynamoDBClient({});
+import { ddb } from '../ddb'
 
 type FilterExpression = ScanInput['FilterExpression']
 type ExpressionAttributeValues = ScanInput['ExpressionAttributeValues']
@@ -32,7 +31,7 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
   let items: Record<string, AttributeValue>[] = []
 
   try {
-    const results = await client.send(command);
+    const results = await ddb.send(command);
     if (results.Items) items = results.Items
   } catch (err) {
     console.error(err);

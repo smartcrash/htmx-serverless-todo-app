@@ -1,11 +1,11 @@
 import * as elements from 'typed-html'
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
-import { DynamoDBClient, PutItemCommand, } from '@aws-sdk/client-dynamodb'
+import { PutItemCommand, } from '@aws-sdk/client-dynamodb'
 import { marshall } from '@aws-sdk/util-dynamodb'
 import { Todo } from '../types'
 import { TodoItem } from "../elements";
+import { ddb } from '../ddb'
 
-const client = new DynamoDBClient({});
 
 export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
   const body = new URLSearchParams(event.body || '')
@@ -25,7 +25,7 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
   const command = new PutItemCommand({ TableName: 'todos', Item: marshall(todo) })
 
   try {
-    await client.send(command);
+    await ddb.send(command);
   } catch (err) {
     console.error(err);
     // TODO: handle error
