@@ -6,6 +6,14 @@ export async function handler() {
     statusCode: 200,
     headers: { 'Content-Type': 'text/html; charset=utf-8' },
     body: <BaseHTML>
+      <input
+        type="date"
+        name="dueDate"
+        hx-get="/prod/todos"
+        hx-trigger="change throttle:500ms"
+        hx-target=".todo-list"
+        hx-swap="outerHTML"
+      />
       <div
         hx-get="/prod/todos"
         hx-trigger="load"
