@@ -72,6 +72,7 @@ describe('create', () => {
       description: 'This is a new todo',
       completed: false,
       createdAt: expect.any(String),
+      updatedAt: expect.any(String),
       dueDate: '2029-12-31',
     };
 
@@ -96,6 +97,7 @@ describe('create', () => {
       description: { S: 'This is a new todo' },
       completed: { BOOL: false },
       createdAt: { S: expect.any(String) },
+      updatedAt: { S: expect.any(String) },
       dueDate: { S: '2029-12-31' },
     })
   });
@@ -149,6 +151,7 @@ describe('update', () => {
       id: { S: '1' },
       title: { S: 'Updated Todo' },
       completed: { BOOL: true },
+      updatedAt: { S: expect.any(String) },
     });
   });
 

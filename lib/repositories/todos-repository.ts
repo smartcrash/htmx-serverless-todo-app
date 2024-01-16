@@ -47,6 +47,7 @@ export class TodosRepository {
       description: description || '',
       completed: false,
       createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
       dueDate: dueDate ? new Date(dueDate).toISOString().slice(0, 10) : null,
     }
 
@@ -57,7 +58,7 @@ export class TodosRepository {
     return [null, todo]
   }
 
-  async update(id: string, data: Partial<Omit<Todo, 'id' | 'createdAt'>>): Promise<string[] | null> {
+  async update(id: string, data: Partial<Omit<Todo, 'id' | 'createdAt' | 'updatedAt'>>): Promise<string[] | null> {
     const [errors, validated] = this.validate(data)
 
     if (errors.length) return errors
@@ -66,6 +67,7 @@ export class TodosRepository {
       TableName: 'todos',
       Item: marshall({
         id,
+        updatedAt: new Date().toISOString(),
         ...validated,
       })
     });

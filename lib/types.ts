@@ -5,4 +5,5 @@ export type Todo = {
   completed: boolean
   dueDate: string | null
   createdAt: string
+  updatedAt: string
 }
