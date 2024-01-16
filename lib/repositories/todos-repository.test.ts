@@ -1,6 +1,6 @@
 import { mockClient } from "aws-sdk-client-mock";
 import { TodosRepository } from './todos-repository';
-import { DynamoDBClient, ScanCommand } from '@aws-sdk/client-dynamodb';
+import { DynamoDBClient, ScanCommand, PutItemCommand } from '@aws-sdk/client-dynamodb';
 import { marshall } from '@aws-sdk/util-dynamodb';
 
 let repository: TodosRepository;
@@ -57,3 +57,70 @@ describe('findAll', () => {
     expect(call.input.ExpressionAttributeValues).toEqual(expectedExpressionAttributeValues);
   });
 })
+
+describe('create', () => {
+  test('should create a new todo and return it', async () => {
+    const data = {
+      title: 'New Todo',
+      description: 'This is a new todo',
+      dueDate: '2029-12-31',
+    };
+
+    const expected = {
+      id: expect.any(String),
+      title: 'New Todo',
+      description: 'This is a new todo',
+      completed: false,
+      createdAt: expect.any(String),
+      dueDate: '2029-12-31',
+    };
+
+    clientMock.on(PutItemCommand).resolves({ $metadata: {} });
+
+    const [errors, result] = await repository.create(data);
+
+    expect(errors).toBeNull();
+    expect(result).toEqual(expected);
+
+
+    const commandCalls = clientMock.commandCalls(PutItemCommand);
+
+    expect(commandCalls.length).toBe(1);
+
+    const call = commandCalls[0].firstArg;
+
+    expect(call.input.TableName).toBe('todos');
+    expect(call.input.Item).toEqual({
+      id: { S: expect.any(String) },
+      title: { S: 'New Todo' },
+      description: { S: 'This is a new todo' },
+      completed: { BOOL: false },
+      createdAt: { S: expect.any(String) },
+      dueDate: { S: '2029-12-31' },
+    })
+  });
+
+  test('should validate the data before creating a new todo', async () => {
+    const data = {
+      title: '',
+      description: '',
+      dueDate: '2021-12-31',
+    };
+
+    const expected = [
+      'title is required',
+      'dueDate must be a future date'
+    ]
+
+    clientMock.on(PutItemCommand).resolves({ $metadata: {} });
+
+    const [errors, result] = await repository.create(data);
+
+    expect(result).toBeNull()
+    expect(errors).toEqual(expected);
+
+    const commandCalls = clientMock.commandCalls(PutItemCommand);
+
+    expect(commandCalls.length).toBe(0);
+  });
+});
