@@ -89,7 +89,7 @@ export class TodosRepository {
 
     if (data.hasOwnProperty('dueDate') && data.dueDate) {
       if (!this.isValidDate(data.dueDate)) errors.push('dueDate must be a valid date')
-      else if (new Date(data.dueDate) < new Date()) errors.push('dueDate must be a future date')
+      else if (this.isDatePast(new Date(data.dueDate))) errors.push('dueDate must be a future date')
     }
 
     return [errors, data]
@@ -97,5 +97,12 @@ export class TodosRepository {
 
   private isValidDate(dateStr: string): boolean {
     return !isNaN(new Date(dateStr).valueOf());
+  }
+
+  private isDatePast(date: Date): boolean {
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+
+    return date < currentDate;
   }
 }
