@@ -9,7 +9,7 @@ export function TodoForm() {
       hx-swap="beforeend"
       {...{ ['hx-on::after-request']: "this.reset()" }}
     >
-      <input name="title" placeholder="Title" required="true" />
+      <input minlength="3" name="title" placeholder="Title" required="true" />
       <textarea name="description" placeholder="Description"></textarea>
       <input type="date" name="dueDate" />
       <button type="submit">Submit</button>
