@@ -34,7 +34,7 @@ export class TodosRepository {
     return items.map((item) => unmarshall(item) as Todo)
   }
 
-  async create(data: Partial<Todo>): Promise<[string[] | null, Todo | null]> {
+  async create(data: Partial<Omit<Todo, 'id' | 'createdAt' | 'completed'>>): Promise<[string[] | null, Todo | null]> {
     const [errors, validated] = this.validate(data)
 
     if (errors.length) return [errors, null]
@@ -43,8 +43,8 @@ export class TodosRepository {
 
     const todo: Todo = {
       id: this.randomId(),
-      title,
-      description,
+      title: title || '',
+      description: description || '',
       completed: false,
       createdAt: new Date().toISOString(),
       dueDate: dueDate ? new Date(dueDate).toISOString().slice(0, 10) : null,
@@ -57,30 +57,43 @@ export class TodosRepository {
     return [null, todo]
   }
 
+  async update(id: string, data: Partial<Omit<Todo, 'id' | 'createdAt'>>): Promise<string[] | null> {
+    const [errors, validated] = this.validate(data)
+
+    if (errors.length) return errors
+
+    const command = new PutItemCommand({
+      TableName: 'todos',
+      Item: marshall({
+        id,
+        ...validated,
+      })
+    });
+
+    await this.client.send(command);
+
+    return null
+  }
+
   private randomId = (): string => Math.random().toString(36).slice(2, 9)
 
-  private validate(data: Partial<Todo>): [string[], { title: string, description: string, dueDate: string | null }] {
-    const title = data.title || ''
-    const description = data.description || ''
-    const dueDate = data.dueDate || null
-
+  private validate(data: Partial<Todo>): [string[], Partial<Todo>] {
     const errors: string[] = []
 
-    if (!title) errors.push('title is required')
-    else if(title.length < 3) errors.push('title must be at least 3 characters long')
-
-    if (dueDate) {
-      if (!this.isValidDate(dueDate)) errors.push('dueDate must be a valid date')
-      if (new Date(dueDate) < new Date()) errors.push('dueDate must be a future date')
+    if (data.hasOwnProperty('title')) {
+      if (!data.title) errors.push('title is required')
+      else if (data.title.length < 3) errors.push('title must be at least 3 characters long')
     }
 
-    return [errors, { title, description, dueDate }]
+    if (data.hasOwnProperty('dueDate') && data.dueDate) {
+      if (!this.isValidDate(data.dueDate)) errors.push('dueDate must be a valid date')
+      else if (new Date(data.dueDate) < new Date()) errors.push('dueDate must be a future date')
+    }
+
+    return [errors, data]
   }
 
   private isValidDate(dateStr: string): boolean {
     return !isNaN(new Date(dateStr).valueOf());
   }
-
-  // async update(todo: Todo): Promise<void> {
-  // }
 }

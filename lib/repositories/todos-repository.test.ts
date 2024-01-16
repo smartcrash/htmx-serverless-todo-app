@@ -124,3 +124,50 @@ describe('create', () => {
     expect(commandCalls.length).toBe(0);
   });
 });
+
+describe('update', () => {
+  test('should update a todo and return null', async () => {
+    const id = '1';
+
+    const data = {
+      title: 'Updated Todo',
+      completed: true,
+    };
+
+    const errors = await repository.update(id, data);
+
+    expect(errors).toBeNull()
+
+    const commandCalls = clientMock.commandCalls(PutItemCommand);
+
+    expect(commandCalls.length).toBe(1);
+
+    const call = commandCalls[0].firstArg;
+
+    expect(call.input.TableName).toBe('todos');
+    expect(call.input.Item).toEqual({
+      id: { S: '1' },
+      title: { S: 'Updated Todo' },
+      completed: { BOOL: true },
+    });
+  });
+
+  test('should validate the data before updating a todo', async () => {
+    const id = '1';
+    const data = {
+      title: '',
+      completed: true,
+      dueDate: '2010-12-31',
+    };
+
+    const expected = ['title is required', 'dueDate must be a future date'];
+
+    const errors = await repository.update(id, data);
+
+    expect(errors).toEqual(expected);
+
+    const commandCalls = clientMock.commandCalls(PutItemCommand);
+
+    expect(commandCalls.length).toBe(0);
+  });
+});
