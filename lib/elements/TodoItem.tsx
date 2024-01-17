@@ -1,5 +1,8 @@
 import * as elements from "typed-html";
+import sanitizeHtml from 'sanitize-html';
 import { Todo } from "../types";
+
+const escapeHtml = (unsafe: string) => sanitizeHtml(unsafe, { disallowedTagsMode: 'recursiveEscape' });
 
 function DueDate({ dueDate }: { dueDate: string }) {
   return <div class="flex space-x-1 items-center">
@@ -9,7 +12,7 @@ function DueDate({ dueDate }: { dueDate: string }) {
       <path
         d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z" />
     </svg>
-    <p class="text-gray-600 text-xs">{dueDate}</p>
+    <p class="text-gray-600 text-xs">{escapeHtml(dueDate)}</p>
   </div>
 }
 
@@ -25,8 +28,8 @@ export function TodoItem({ id, title, description, dueDate, completed }: Todo) {
       />
 
       <div class="ml-3 py-2">
-        <h2 class="font-bold text-md">{title}</h2>
-        <p class="text-xs mb-1">{description}</p>
+        <h2 class="font-bold text-md">{escapeHtml(title)}</h2>
+        <p class="text-xs mb-1">{escapeHtml(description)}</p>
         {dueDate ? <DueDate dueDate={dueDate} /> : null}
       </div>
     </li>
