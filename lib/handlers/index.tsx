@@ -34,7 +34,11 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
           hx-get="/prod/todos"
           hx-trigger="load"
           hx-swap="outerHTML"
-        ></div>
+        >
+          <div class="htmx-indicator font-bold h-40 text-gray-500 flex items-center justify-center">
+            <p class="text-center">Loading...</p>
+          </div>
+        </div>
         <TodoForm />
       </div>
     </BaseHTML>
