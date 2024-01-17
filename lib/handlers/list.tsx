@@ -14,6 +14,8 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
     ...(dueDate && { dueDate }),
   })
 
+  todos.sort((a, b) => +new Date(a.createdAt) - +new Date(b.createdAt))
+
   return {
     statusCode: 200,
     headers: { 'Content-Type': 'text/html; charset=utf-8' },
