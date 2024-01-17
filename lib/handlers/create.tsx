@@ -6,10 +6,22 @@ import { TodosRepository } from '../repositories'
 
 
 export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
-  const body = new URLSearchParams(event.body || '')
-  const title = body.get('title') || ''
-  const description = body.get('description') || ''
-  const dueDate = body.get('dueDate') || null
+  const body = event.body || ''
+  let title = ''
+  let description = ''
+  let dueDate = null
+
+  if (event.headers['Content-Type'] === 'application/json') {
+    const data = JSON.parse(body)
+    title = data.title
+    description = data.description
+    dueDate = data.dueDate
+  } else {
+    const searchParams = new URLSearchParams(body)
+    title = searchParams.get('title') || ''
+    description = searchParams.get('description') || ''
+    dueDate = searchParams.get('dueDate') || null
+  }
 
   const repository = new TodosRepository(ddb)
   const [errors, todo] = await repository.create({
@@ -18,8 +30,23 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
     dueDate,
   })
 
+
   if (errors) {
-    // TODO: render errors
+    return {
+      statusCode: 400,
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+      },
+      body: JSON.stringify({ errors }),
+    }
+  }
+
+  if (event.headers['Accept'] === 'application/json') {
+    return {
+      statusCode: 200,
+      headers: { 'Content-Type': 'application/json; charset=utf-8' },
+      body: JSON.stringify(todo),
+    }
   }
 
   return {

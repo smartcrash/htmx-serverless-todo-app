@@ -13,7 +13,10 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
 
   return {
     statusCode: 200,
-    headers: { 'Content-Type': 'text/html; charset=utf-8' },
+    headers: event.headers['Accept'] === 'application/json'
+      ? { 'Content-Type': 'application/json; charset=utf-8' }
+      : { 'Content-Type': 'text/html; charset=utf-8' }
+    ,
     body: ''
   }
 }

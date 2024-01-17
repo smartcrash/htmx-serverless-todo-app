@@ -1,7 +1,16 @@
 import * as elements from 'typed-html'
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import { BaseHTML, TodoForm } from '../elements'
 
-export async function handler() {
+export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
+  if (event.headers['Accept'] === 'application/json') {
+    return {
+      statusCode: 200,
+      headers: { 'Content-Type': 'application/json; charset=utf-8' },
+      body: JSON.stringify({ message: 'Hello, world!' }),
+    }
+  }
+
   return {
     statusCode: 200,
     headers: { 'Content-Type': 'text/html; charset=utf-8' },

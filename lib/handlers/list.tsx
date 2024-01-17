@@ -16,6 +16,14 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
 
   todos.sort((a, b) => +new Date(a.createdAt) - +new Date(b.createdAt))
 
+  if (event.headers['Accept']  === 'application/json') {
+    return {
+      statusCode: 200,
+      headers: { 'Content-Type': 'application/json; charset=utf-8' },
+      body: JSON.stringify(todos),
+    }
+  }
+
   return {
     statusCode: 200,
     headers: { 'Content-Type': 'text/html; charset=utf-8' },
