@@ -1,8 +1,9 @@
 name: Deploy CDK Project
-  on:
-    push:
-      branches:
-        - main
+
+on:
+  push:
+    branches:
+      - main
 
 jobs:
   aws_cdk:
