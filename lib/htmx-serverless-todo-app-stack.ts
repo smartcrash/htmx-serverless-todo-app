@@ -13,7 +13,7 @@ export class HtmxServerlessTodoAppStack extends cdk.Stack {
     const defaultNodejsFunctionProps: NodejsFunctionProps = {
       runtime: Runtime.NODEJS_20_X,
       depsLockFilePath: join(__dirname, '..', 'package-lock.json'),
-      projectRoot: __dirname,
+      projectRoot: join(__dirname, '..'),
     }
 
     const indexHandlerFunction = new NodejsFunction(this, 'IndexHandler', {
